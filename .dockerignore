@@ -1,0 +1,14 @@
+Dockerfile
+.dockerignore
+node_modules
+*.md
+.next
+.git
+.gitignore
+pnpm-Lock.yaml
+.czrc
+.commitlintrc
+.vscode
+.husky
+.lintstagedrc
+drawio

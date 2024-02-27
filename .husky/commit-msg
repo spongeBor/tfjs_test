@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "\033[44;3m====start commit-msg options=======\033[0m"
+pnpm commitlint --edit $1

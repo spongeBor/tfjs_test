@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "\033[43;3m====start pre-commit options=======\033[0m"
+pnpm lint-staged

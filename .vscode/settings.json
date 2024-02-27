@@ -1,0 +1,21 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "tailwindCSS.classAttributes": ["class", "className", "btnClassName"],
+  "cSpell.words": [
+    "clsx",
+    "commitlint",
+    "daisyui",
+    "inversify",
+    "Lumos",
+    "phina",
+    "pixi",
+    "tailwindcss"
+  ]
+}
