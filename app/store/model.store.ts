@@ -1,44 +1,92 @@
+import { KNNClassifier, create } from "@tensorflow-models/knn-classifier";
 import { MobileNet, load } from "@tensorflow-models/mobilenet";
 import * as tf from "@tensorflow/tfjs";
 import "@tensorflow/tfjs-backend-webgl";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 class ModelStore {
   net!: MobileNet;
-  prediction = "";
-  probability = 0;
+  imagePrediction = "";
+  imageProbability = 0;
+  videoPrediction = "";
+  videoProbability = 0;
   startCamera = false;
+  hasInit = false;
+  classifier: KNNClassifier | null = null;
+  webcamElement: HTMLVideoElement | null = null;
+  webcam: MyAwaited<ReturnType<typeof tf.data.webcam>> | null = null;
   constructor() {
-    makeAutoObservable(this, { startCamera: false }, { autoBind: true });
+    this.classifier = create();
+    makeAutoObservable(
+      this,
+      { net: false, webcamElement: false },
+      { autoBind: true },
+    );
   }
-  async init() {
-    if (this.net) {
+  *init() {
+    if (this.net || this.hasInit) {
       return;
     }
     console.log("Loading mobilenet..");
-    this.net = await load();
+    this.net = yield load();
+    runInAction(() => {
+      this.hasInit = true;
+    });
     console.log("Successfully loaded model");
   }
   async identifyImage(
     ele: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement,
   ) {
     const result = await this.net.classify(ele);
-    this.prediction = result[0].className;
-    this.probability = result[0].probability;
+    runInAction(() => {
+      this.imagePrediction = result[0].className;
+      this.imageProbability = result[0].probability;
+    });
   }
   async startIdentifyWithCamera(webcamElement: HTMLVideoElement) {
     this.startCamera = true;
-    const webcam = await tf.data.webcam(webcamElement);
+    this.webcamElement = webcamElement;
+    const webcam = await tf.data.webcam(this.webcamElement);
     while (this.startCamera) {
+      console.log(this.classifier?.getNumClasses());
       const img = await webcam.capture();
       const result = await this.net.classify(img);
-      this.prediction = result[0].className;
-      this.probability = result[0].probability;
+      runInAction(() => {
+        this.videoPrediction = result[0].className;
+        this.videoProbability = result[0].probability;
+      });
       img.dispose();
       await tf.nextFrame();
     }
   }
   stopIdentifyWithCamera() {
     this.startCamera = false;
+    // 暂停视频播放
+    this.webcamElement!.pause();
+    if (this.webcamElement?.srcObject) {
+      const stream = this.webcamElement.srcObject;
+      const tracks = (stream as any).getTracks();
+
+      tracks.forEach((track: any) => {
+        track.stop(); // 停止轨道（关闭摄像头或音频流）
+      });
+
+      // 清空媒体流
+      this.webcamElement.srcObject = null;
+    }
+  }
+  async addExample(classId: string) {
+    if (!this.webcam) return;
+    // Capture an image from the web camera.
+    const img = await this.webcam.capture();
+    // Get the intermediate activation of MobileNet 'conv_preds' and pass that
+    // to the KNN classifier.
+    const activation = this.net.infer(img, true);
+
+    // Pass the intermediate activation to the classifier.
+    this.classifier?.addExample(activation, classId);
+
+    // Dispose the tensor to release the memory.
+    img.dispose();
   }
 }
 

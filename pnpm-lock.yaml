@@ -8,6 +8,9 @@ dependencies:
   '@tailwindcss/typography':
     specifier: ^0.5.10
     version: 0.5.10(tailwindcss@3.4.1)
+  '@tensorflow-models/knn-classifier':
+    specifier: ^1.2.6
+    version: 1.2.6(@tensorflow/tfjs-backend-cpu@4.17.0)(@tensorflow/tfjs-core@4.17.0)
   '@tensorflow-models/mobilenet':
     specifier: ^2.1.1
     version: 2.1.1(@tensorflow/tfjs-converter@4.17.0)(@tensorflow/tfjs-core@4.17.0)
@@ -580,6 +583,16 @@ packages:
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.1
+    dev: false
+
+  /@tensorflow-models/knn-classifier@1.2.6(@tensorflow/tfjs-backend-cpu@4.17.0)(@tensorflow/tfjs-core@4.17.0):
+    resolution: {integrity: sha512-68RG9y70bFF0qYFpF+4bGaalAiEqz54v1qBmiSo3XODJq8Bow9EcDeAQBGPz6Bxiz6VQlZOdg29xiYm8N/a2Tw==}
+    peerDependencies:
+      '@tensorflow/tfjs-backend-cpu': ^4.10.0
+      '@tensorflow/tfjs-core': ^4.10.0
+    dependencies:
+      '@tensorflow/tfjs-backend-cpu': 4.17.0(@tensorflow/tfjs-core@4.17.0)
+      '@tensorflow/tfjs-core': 4.17.0
     dev: false
 
   /@tensorflow-models/mobilenet@2.1.1(@tensorflow/tfjs-converter@4.17.0)(@tensorflow/tfjs-core@4.17.0):

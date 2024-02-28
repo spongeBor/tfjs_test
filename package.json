@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.10",
+    "@tensorflow-models/knn-classifier": "^1.2.6",
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.17.0",
     "@tensorflow/tfjs-backend-webgl": "^4.17.0",
