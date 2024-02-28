@@ -1,14 +1,5 @@
-This is a personal blog to spongeB.
+# TS版tensorflow快速使用探索
 
-## Getting Started
-
-pnpm dev
-
-## Getting builded
-
-pnpm build
-
-## Commit
-
-pnpm commit
-pnpm commit:amend
+- node 20+
+- pnpm i 安装依赖
+- pnpm dev 开始调试

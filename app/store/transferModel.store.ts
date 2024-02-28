@@ -1,3 +1,4 @@
+import { getMobileNet, getTF } from "@/util";
 import { MobileNet } from "@tensorflow-models/mobilenet";
 import { makeAutoObservable, runInAction } from "mobx";
 import("@tensorflow/tfjs-backend-webgl");
@@ -23,7 +24,7 @@ class TransferModelStore {
       return;
     }
     console.log("Loading mobilenet..");
-    this.net = await (await import("@tensorflow-models/mobilenet")).load();
+    this.net = await (await getMobileNet()).load();
 
     this.hasInit = true;
     console.log("Successfully loaded model");
@@ -40,7 +41,7 @@ class TransferModelStore {
   async startIdentifyWithCamera(webcamElement: HTMLVideoElement) {
     this.startCamera = true;
     this.webcamElement = webcamElement;
-    const tf = await import("@tensorflow/tfjs");
+    const tf = await getTF();
     const webcam = await tf.data.webcam(this.webcamElement);
     while (this.startCamera) {
       const img = await webcam.capture();
