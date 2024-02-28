@@ -1,7 +1,9 @@
-"use client";
+import Container from "./Container";
 
-export default function TransferPage() {
+export default async function TransferPage() {
   return (
-    <main className='relative flex h-screen w-screen items-center justify-center'></main>
+    <main className='relative flex h-screen w-screen items-center justify-center'>
+      <Container />
+    </main>
   );
 }

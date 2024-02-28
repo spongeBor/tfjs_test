@@ -29,6 +29,7 @@
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.17.0",
     "@tensorflow/tfjs-backend-webgl": "^4.17.0",
+    "@tensorflow/tfjs-vis": "^1.5.1",
     "clsx": "^2.1.0",
     "i18next": "^23.10.0",
     "i18next-resources-to-backend": "^1.2.0",
