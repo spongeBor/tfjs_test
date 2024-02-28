@@ -1,10 +1,10 @@
 import { createContext, useContext } from "react";
-import model from "./model.store";
+import transferModelStore from "./transferModel.store";
 
 class RootStore {
-  modelStore: typeof model;
+  transferModelStore: typeof transferModelStore;
   constructor() {
-    this.modelStore = model;
+    this.transferModelStore = transferModelStore;
   }
 }
 const rootStore = new RootStore();

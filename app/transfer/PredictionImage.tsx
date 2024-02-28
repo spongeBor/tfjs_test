@@ -9,7 +9,7 @@ import Result from "./Result";
 
 function PredictionImage() {
   const { identifyImage, hasInit, imagePrediction, imageProbability } =
-    useStore().modelStore;
+    useStore().transferModelStore;
   const imageRef = useRef<HTMLImageElement>(null);
   const Group = observer(() => {
     return (

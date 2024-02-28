@@ -1,28 +1,20 @@
-"use client";
-import { useEffect, useRef } from "react";
-import LoadingModel from "./component/LoadingModel";
-import PredictionCamera from "./component/PredictionCamera";
-import PredictionImage from "./component/PredictionImage";
-import { useStore } from "./store";
-
+import Link from "next/link";
 export default function Home() {
-  const { init } = useStore().modelStore;
-  useEffect(() => {
-    if (countRef.current === 1) {
-      return;
-    }
-    init();
-    countRef.current = 1;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  const countRef = useRef(0);
+  const routersMap = [
+    ["training/curve", "曲线拟合训练"],
+    ["transfer", "迁移学习"],
+  ];
   return (
     <main className='relative flex h-screen w-screen items-center justify-center'>
-      <div className='absolute top-20'>
-        <LoadingModel />
+      <div className='flex size-1/2 flex-col items-center justify-around'>
+        {routersMap.map((router, key) => {
+          return (
+            <Link href={`/${router[0]}`} key={key}>
+              <button className='btn btn-primary'>{router[1]}</button>
+            </Link>
+          );
+        })}
       </div>
-      <PredictionImage />
-      <PredictionCamera />
     </main>
   );
 }

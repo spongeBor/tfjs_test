@@ -1,9 +1,7 @@
-import { KNNClassifier, create } from "@tensorflow-models/knn-classifier";
-import { MobileNet, load } from "@tensorflow-models/mobilenet";
-import * as tf from "@tensorflow/tfjs";
-import "@tensorflow/tfjs-backend-webgl";
+import { MobileNet } from "@tensorflow-models/mobilenet";
 import { makeAutoObservable, runInAction } from "mobx";
-class ModelStore {
+import("@tensorflow/tfjs-backend-webgl");
+class TransferModelStore {
   net!: MobileNet;
   imagePrediction = "";
   imageProbability = 0;
@@ -11,26 +9,23 @@ class ModelStore {
   videoProbability = 0;
   startCamera = false;
   hasInit = false;
-  classifier: KNNClassifier | null = null;
   webcamElement: HTMLVideoElement | null = null;
-  webcam: MyAwaited<ReturnType<typeof tf.data.webcam>> | null = null;
+  webcam: any = null;
   constructor() {
-    this.classifier = create();
     makeAutoObservable(
       this,
       { net: false, webcamElement: false },
       { autoBind: true },
     );
   }
-  *init() {
+  async init() {
     if (this.net || this.hasInit) {
       return;
     }
     console.log("Loading mobilenet..");
-    this.net = yield load();
-    runInAction(() => {
-      this.hasInit = true;
-    });
+    this.net = await (await import("@tensorflow-models/mobilenet")).load();
+
+    this.hasInit = true;
     console.log("Successfully loaded model");
   }
   async identifyImage(
@@ -45,9 +40,9 @@ class ModelStore {
   async startIdentifyWithCamera(webcamElement: HTMLVideoElement) {
     this.startCamera = true;
     this.webcamElement = webcamElement;
+    const tf = await import("@tensorflow/tfjs");
     const webcam = await tf.data.webcam(this.webcamElement);
     while (this.startCamera) {
-      console.log(this.classifier?.getNumClasses());
       const img = await webcam.capture();
       const result = await this.net.classify(img);
       runInAction(() => {
@@ -83,12 +78,12 @@ class ModelStore {
     const activation = this.net.infer(img, true);
 
     // Pass the intermediate activation to the classifier.
-    this.classifier?.addExample(activation, classId);
+    // this.classifier?.addExample(activation, classId);
 
     // Dispose the tensor to release the memory.
     img.dispose();
   }
 }
 
-const model = new ModelStore();
-export default model;
+const transferModelStore = new TransferModelStore();
+export default transferModelStore;

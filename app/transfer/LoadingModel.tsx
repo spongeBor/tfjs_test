@@ -2,7 +2,7 @@ import { useStore } from "@/store";
 import { observer } from "mobx-react-lite";
 
 function LoadingModel() {
-  const { hasInit } = useStore().modelStore;
+  const { hasInit } = useStore().transferModelStore;
   return (
     <>
       {!hasInit && (

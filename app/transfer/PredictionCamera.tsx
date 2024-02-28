@@ -7,7 +7,7 @@ import { useRef } from "react";
 import Result from "./Result";
 
 const CameraResult = observer(() => {
-  const { videoPrediction, videoProbability } = useStore().modelStore;
+  const { videoPrediction, videoProbability } = useStore().transferModelStore;
   return <Result prediction={videoPrediction} probability={videoProbability} />;
 });
 function PredictionCamera() {
@@ -16,7 +16,7 @@ function PredictionCamera() {
     startCamera,
     startIdentifyWithCamera,
     stopIdentifyWithCamera,
-  } = useStore().modelStore;
+  } = useStore().transferModelStore;
   const onOpen = () => {
     if (startCamera) {
       stopIdentifyWithCamera();
