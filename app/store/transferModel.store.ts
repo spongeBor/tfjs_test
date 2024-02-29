@@ -8,10 +8,15 @@ class TransferModelStore {
   imageProbability = 0;
   videoPrediction = "";
   videoProbability = 0;
+  customVideoPrediction = "";
+  customVideoProbability = 0;
   startCamera = false;
   hasInit = false;
   webcamElement: HTMLVideoElement | null = null;
   webcam: any = null;
+  classifier!: ReturnType<
+    typeof import("@tensorflow-models/knn-classifier").create
+  >;
   constructor() {
     makeAutoObservable(
       this,
@@ -39,18 +44,35 @@ class TransferModelStore {
     });
   }
   async startIdentifyWithCamera(webcamElement: HTMLVideoElement) {
-    this.startCamera = true;
+    if (!this.classifier) {
+      this.classifier = (
+        await import("@tensorflow-models/knn-classifier")
+      ).create();
+    }
+
+    runInAction(() => {
+      this.startCamera = true;
+    });
     this.webcamElement = webcamElement;
     const tf = await getTF();
-    const webcam = await tf.data.webcam(this.webcamElement);
+    this.webcam = await tf.data.webcam(this.webcamElement);
     while (this.startCamera) {
-      const img = await webcam.capture();
+      const img = await this.webcam.capture();
       const result = await this.net.classify(img);
+      if (this.classifier.getNumClasses() > 0) {
+        const activation = this.net.infer(img, true);
+        const result = await this.classifier.predictClass(activation);
+        runInAction(() => {
+          this.customVideoPrediction = result.label;
+          this.customVideoProbability = result.confidences[result.label];
+        });
+      }
       runInAction(() => {
         this.videoPrediction = result[0].className;
         this.videoProbability = result[0].probability;
       });
       img.dispose();
+
       await tf.nextFrame();
     }
   }
@@ -68,10 +90,21 @@ class TransferModelStore {
 
       // 清空媒体流
       this.webcamElement.srcObject = null;
+      this.classifier.clearAllClasses();
+      this.videoPrediction = "";
+      this.videoProbability = 0;
+      this.customVideoPrediction = "";
+      this.customVideoProbability = 0;
     }
   }
   async addExample(classId: string) {
+    if (!this.classifier) {
+      this.classifier = (
+        await import("@tensorflow-models/knn-classifier")
+      ).create();
+    }
     if (!this.webcam) return;
+
     // Capture an image from the web camera.
     const img = await this.webcam.capture();
     // Get the intermediate activation of MobileNet 'conv_preds' and pass that
@@ -79,7 +112,7 @@ class TransferModelStore {
     const activation = this.net.infer(img, true);
 
     // Pass the intermediate activation to the classifier.
-    // this.classifier?.addExample(activation, classId);
+    this.classifier.addExample(activation, classId);
 
     // Dispose the tensor to release the memory.
     img.dispose();

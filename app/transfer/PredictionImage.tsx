@@ -30,7 +30,7 @@ function PredictionImage() {
   });
 
   return (
-    <div className='flex size-2/3 flex-col items-center justify-between'>
+    <div className='flex flex-col items-center justify-between'>
       <Image
         ref={imageRef}
         id='img'

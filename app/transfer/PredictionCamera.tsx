@@ -10,12 +10,23 @@ const CameraResult = observer(() => {
   const { videoPrediction, videoProbability } = useStore().transferModelStore;
   return <Result prediction={videoPrediction} probability={videoProbability} />;
 });
+const CustomCameraResult = observer(() => {
+  const { customVideoPrediction, customVideoProbability } =
+    useStore().transferModelStore;
+  return (
+    <Result
+      prediction={customVideoPrediction}
+      probability={customVideoProbability}
+    />
+  );
+});
 function PredictionCamera() {
   const {
     hasInit,
     startCamera,
     startIdentifyWithCamera,
     stopIdentifyWithCamera,
+    addExample,
   } = useStore().transferModelStore;
   const onOpen = () => {
     if (startCamera) {
@@ -36,7 +47,33 @@ function PredictionCamera() {
         >
           {startCamera ? "关闭摄像头识别" : "开启摄像头识别"}
         </button>
-        <CameraResult />
+        <div className='flex justify-center *:btn-sm *:m-1'>
+          <button
+            className='btn btn-primary'
+            onClick={() => addExample("石头")}
+          >
+            标记为石头
+          </button>
+          <button
+            className='btn btn-primary'
+            onClick={() => addExample("剪刀")}
+          >
+            标记为剪刀
+          </button>
+          <button className='btn btn-primary' onClick={() => addExample("布")}>
+            标记为布
+          </button>
+        </div>
+        <div className='flex *:m-2'>
+          <div className='flex flex-col'>
+            <div>原模型预测：</div>
+            <CameraResult />
+          </div>
+          <div className='flex flex-col'>
+            <div>自定义模型预测：</div>
+            <CustomCameraResult />
+          </div>
+        </div>
       </div>
     );
   });
