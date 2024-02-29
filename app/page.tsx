@@ -2,6 +2,7 @@ import Link from "next/link";
 export default function Home() {
   const routersMap = [
     ["training/curve", "曲线拟合训练"],
+    ["training/minst", "cnn(卷积)预测minst"],
     ["transfer", "迁移学习"],
   ];
   return (

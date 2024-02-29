@@ -69,7 +69,7 @@ export async function createModel() {
  */
 async function convertToTensor(data: IData[]) {
   // Wrapping these calculations in a tidy will dispose any
-  // intermediate tensors .
+  // intermediate tensors .hn
   const tf = await import("@tensorflow/tfjs");
   return tf.tidy(() => {
     // Step 1. Shuffle the data
